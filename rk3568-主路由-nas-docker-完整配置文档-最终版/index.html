@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<title>
+RK3568 主路由 + NAS + Docker 完整配置文档 (最终版) | yuebin's blog	</title>
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<link rel="stylesheet" type="text/css" media="all" href="../wp-content/themes/twentyten/style.css?ver=20251202">
+<link rel="pingback" href="../xmlrpc.php">
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch" href="../">
+<link rel="alternate" type="application/rss+xml" title="yuebin's blog » Feed" href="../feed/">
+<link rel="alternate" type="application/rss+xml" title="yuebin's blog » Comments Feed" href="../comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="yuebin's blog » RK3568 主路由 + NAS + Docker 完整配置文档 (最终版) Comments Feed" href="../rk3568-%e4%b8%bb%e8%b7%af%e7%94%b1-nas-docker-%e5%ae%8c%e6%95%b4%e9%85%8d%e7%bd%ae%e6%96%87%e6%a1%a3-%e6%9c%80%e7%bb%88%e7%89%88/feed/">
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="../wp-json/oembed/1.0/embed?url=https%3A%2F%2Fyuebinliu.github.io%2Fcfsh-e2e-pages%2Frk3568-%25e4%25b8%25bb%25e8%25b7%25af%25e7%2594%25b1-nas-docker-%25e5%25ae%258c%25e6%2595%25b4%25e9%2585%258d%25e7%25bd%25ae%25e6%2596%2587%25e6%25a1%25a3-%25e6%259c%2580%25e7%25bb%2588%25e7%2589%2588%2F">
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="../wp-json/oembed/1.0/embed?url=https%3A%2F%2Fyuebinliu.github.io%2Fcfsh-e2e-pages%2Frk3568-%25e4%25b8%25bb%25e8%25b7%25af%25e7%2594%25b1-nas-docker-%25e5%25ae%258c%25e6%2595%25b4%25e9%2585%258d%25e7%25bd%25ae%25e6%2596%2587%25e6%25a1%25a3-%25e6%259c%2580%25e7%25bb%2588%25e7%2589%2588%2F&format=xml">
+<style id="wp-img-auto-sizes-contain-inline-css" type="text/css">
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<style id="wp-emoji-styles-inline-css" type="text/css">
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+/*# sourceURL=wp-emoji-styles-inline-css */
+</style>
+<style id="classic-theme-styles-inline-css" type="text/css">
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+/*# sourceURL=/wp-includes/css/classic-themes.min.css */
+</style>
+<style id="global-styles-inline-css" type="text/css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #fff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--color--blue: #0066cc;--wp--preset--color--medium-gray: #666;--wp--preset--color--light-gray: #f1f1f1;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<link rel="stylesheet" id="twentyten-block-style-css" href="../wp-content/themes/twentyten/blocks.css?ver=20250220" type="text/css" media="all">
+<link rel="https://api.w.org/" href="../wp-json/"><link rel="alternate" title="JSON" type="application/json" href="../wp-json/wp/v2/posts/1596"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc.php?rsd">
+<meta name="generator" content="WordPress 6.9.1">
+<link rel="canonical" href="../rk3568-%e4%b8%bb%e8%b7%af%e7%94%b1-nas-docker-%e5%ae%8c%e6%95%b4%e9%85%8d%e7%bd%ae%e6%96%87%e6%a1%a3-%e6%9c%80%e7%bb%88%e7%89%88/">
+<link rel="shortlink" href="../?p=1596">
+<meta http-equiv="Cache-Control" content="public, max-age=0"><meta name="x-static-hosting" content="true"></head>
+
+<body class="wp-singular post-template-default single single-post postid-1596 single-format-standard wp-custom-logo wp-theme-twentyten">
+<div id="wrapper" class="hfeed">
+		<a href="#content" class="screen-reader-text skip-link">Skip to content</a>
+	<div id="header">
+		<div id="masthead">
+			<div id="branding" role="banner">
+									<div id="site-title">
+						<span>
+							<a href="../" rel="home">yuebin's blog</a>
+						</span>
+					</div>
+										<div id="site-description">描述！！！！！</div>
+					<img src="../wp-content/themes/twentyten/images/headers/path.jpg" width="940" height="198" alt="yuebin's blog" decoding="async" fetchpriority="high">			</div><!-- #branding -->
+
+			<div id="access" role="navigation">
+				<div class="menu-header"><ul id="menu-menu-1" class="menu"><li id="menu-item-1456" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1456"><a href="/">Home</a></li>
+<li id="menu-item-1552" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1552"><a href="/todo/">todo</a></li>
+<li id="menu-item-1553" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1553"><a href="/tool/">tool</a></li>
+<li id="menu-item-1556" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1556"><a href="../tools/">tools</a></li>
+<li id="menu-item-1587" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1587"><a href="https://tj.yuebin.uk">内镜统计系统</a>
+<ul class="sub-menu">
+	<li id="menu-item-1575" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1575"><a href="/ree/">实时统计V1</a></li>
+	<li id="menu-item-1555" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1555"><a href="/re/">报表生成V1</a></li>
+</ul>
+</li>
+<li id="menu-item-1457" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1457"><a href="../aboutme/">关于我</a></li>
+<li id="menu-item-1651" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1651"><a href="../category/life-feeling/">生活</a></li>
+<li id="menu-item-1652" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1652"><a href="../category/%e8%83%a1%e6%80%9d%e4%b9%b1%e6%83%b3/">胡思乱想</a></li>
+<li id="menu-item-1653" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1653"><a href="../category/resourse/">Resourse</a></li>
+<li id="menu-item-1654" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1654"><a href="../category/hosting/">网络相关</a></li>
+<li id="menu-item-1655" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1655"><a href="../category/uncategorized/">Uncategorized</a></li>
+<li id="menu-item-1656" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1656"><a href="../category/%e8%b5%84%e6%ba%90/">资源</a></li>
+</ul></div>			</div><!-- #access -->
+		</div><!-- #masthead -->
+	</div><!-- #header -->
+
+	<div id="main">
+
+		<div id="container">
+			<div id="content" role="main">
+
+			
+
+				<div id="nav-above" class="navigation">
+					<div class="nav-previous"><a href="../rk3568-%e8%b7%af%e7%94%b1%e5%99%a8-dd-%e5%91%bd%e4%bb%a4%e5%88%b7%e6%9c%ba%e6%95%99%e7%a8%8b/" rel="prev"><span class="meta-nav">←</span> RK3568 路由器 DD 命令刷机教程</a></div>
+					<div class="nav-next"><a href="../pdf-%e6%96%87%e7%8c%ae%e5%8e%bb%e6%b0%b4%e5%8d%b0/" rel="next">PDF 文献去水印 <span class="meta-nav">→</span></a></div>
+				</div><!-- #nav-above -->
+
+				<div id="post-1596" class="post-1596 post type-post status-publish format-standard hentry category-resourse">
+					<h1 class="entry-title">RK3568 主路由 + NAS + Docker 完整配置文档 (最终版)</h1>
+
+					<div class="entry-meta">
+						<span class="meta-prep meta-prep-author">Posted on</span> <a href="../rk3568-%e4%b8%bb%e8%b7%af%e7%94%b1-nas-docker-%e5%ae%8c%e6%95%b4%e9%85%8d%e7%bd%ae%e6%96%87%e6%a1%a3-%e6%9c%80%e7%bb%88%e7%89%88/" title="11:56 am" rel="bookmark"><span class="entry-date">March 12, 2026</span></a> <span class="meta-sep">by</span> <span class="author vcard"><a class="url fn n" href="../author/admin/" title="View all posts by admin">admin</a></span>					</div><!-- .entry-meta -->
+
+					<div class="entry-content">
+						<hr>
+<h2><strong>一、硬件配置</strong></h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>规格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>设备</strong></td>
+<td>RK3568 开发板</td>
+</tr>
+<tr>
+<td><strong>CPU</strong></td>
+<td>4核 Cortex-A55</td>
+</tr>
+<tr>
+<td><strong>内存</strong></td>
+<td>8GB</td>
+</tr>
+<tr>
+<td><strong>存储</strong></td>
+<td>eMMC: 229GB（系统盘）</td>
+</tr>
+<tr>
+<td></td>
+<td>NVMe: 14GB Intel Optane（Docker 存储）</td>
+</tr>
+<tr>
+<td><strong>网络</strong></td>
+<td>5个千兆网口（4LAN + 1WAN）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2><strong>二、系统架构</strong></h2>
+<pre><code>外网(PPPoE) → WAN口 → OpenWrt容器(LXC) → 宿主机网桥(br-mgmt) → LAN1-4口
+                              ↓
+                          Docker 容器
+                              ↓
+                      Web环境 (Nginx/PHP/MySQL)</code></pre>
+<hr>
+<h2><strong>三、宿主机系统安装</strong></h2>
+<h3><strong>3.1 刷机基础</strong></h3>
+<pre><code class="language-bash"># 将镜像传入 tmp 目录
+cd /tmp
+# 上传 op.img 到 /tmp
+
+# 刷写 eMMC（OP 固件）
+dd if=/tmp/op.img of=/dev/mmcblk0 bs=1M status=progress
+sync
+echo "刷写完成，等待2分钟后断电重启"</code></pre>
+<h3><strong>3.2 基础工具安装</strong></h3>
+<pre><code class="language-bash"># 更新系统
+apt update && apt upgrade -y
+
+# 安装必要工具
+apt install -y lxc bridge-utils ethtool net-tools dnsutils curl wget git htop \
+bash-completion sudo vim</code></pre>
+<hr>
+<h2><strong>四、宿主机网络配置（关键步骤）</strong></h2>
+<h3><strong>4.1 安装传统网络管理</strong></h3>
+<pre><code class="language-bash"># 安装 ifupdown（替代 NetworkManager）
+apt update
+apt install -y ifupdown
+
+# 禁用 NetworkManager，启用 networking
+systemctl stop NetworkManager
+systemctl disable NetworkManager
+systemctl enable networking</code></pre>
+<h3><strong>4.2 配置网络接口</strong></h3>
+<pre><code class="language-bash"># 编辑 /etc/network/interfaces
+cat > /etc/network/interfaces <<'EOF'
+# 本地回环
+auto lo
+iface lo inet loopback
+
+# 管理网桥 - 4个LAN口
+auto br-mgmt
+iface br-mgmt inet static
+    address 192.168.2.2/24
+    bridge_ports lan1 lan2 lan3 lan4
+    bridge_stp off
+    bridge_fd 0
+    up ip route add default via 192.168.2.1 dev br-mgmt || true
+    down ip route del default via 192.168.2.1 dev br-mgmt || true
+
+# WAN口 - 直通给容器
+auto wan
+iface wan inet manual
+    pre-up ip link set wan nomaster || true
+    up ip link set wan up
+EOF
+
+# 重启网络
+systemctl restart networking
+
+# 验证
+ip addr show br-mgmt  # 应显示 192.168.2.2
+brctl show            # 应显示 lan1-4 在 br-mgmt 中</code></pre>
+<h3><strong>4.3 DNS 持久化</strong></h3>
+<pre><code class="language-bash"># 配置 systemd-resolved
+mkdir -p /etc/systemd/resolved.conf.d
+cat > /etc/systemd/resolved.conf.d/dns.conf <<EOF
+[Resolve]
+DNS=192.168.2.1 8.8.8.8
+Domains=~.
+EOF
+
+systemctl restart systemd-resolved</code></pre>
+<hr>
+<h2><strong>五、系统核心优化（解决根本问题！）</strong></h2>
+<h3><strong>5.1 内核网络参数优化</strong></h3>
+<pre><code class="language-bash"># 添加网络优化参数到 sysctl.conf
+cat >> /etc/sysctl.conf <<EOF
+
+# 网络优化参数（适用于高速网络和容器环境）
+net.core.rmem_max = 67108864          # 接收缓冲区最大 64MB
+net.core.wmem_max = 67108864          # 发送缓冲区最大 64MB
+net.core.rmem_default = 131072         # 默认接收缓冲区 128KB
+net.core.wmem_default = 131072         # 默认发送缓冲区 128KB
+net.ipv4.tcp_rmem = 4096 87380 67108864   # TCP接收缓冲区
+net.ipv4.tcp_wmem = 4096 65536 67108864   # TCP发送缓冲区
+net.core.netdev_max_backlog = 10000    # 网卡队列大小
+net.ipv4.tcp_window_scaling = 1        # 启用TCP窗口缩放
+EOF
+
+# 立即生效
+sysctl -p
+
+# 验证
+sysctl net.core.rmem_max net.core.wmem_max
+# 应显示 67108864 67108864</code></pre>
+<h3><strong>5.2 开机启动优化（硬件 offload）</strong></h3>
+<pre><code class="language-bash"># 修复 rc.local 语法并添加硬件优化
+cat > /etc/rc.local <<'EOF'
+#!/bin/sh -e
+#
+# rc.local - 开机启动脚本
+#
+
+# 开启硬件 offload（网卡硬件加速）
+/usr/sbin/ethtool -K eth0 tx on rx on tso on gso on gro on > /var/log/ethtool.log 2>&1
+/usr/sbin/ethtool -K eth0 tx-udp-segmentation on >> /var/log/ethtool.log 2>&1
+/usr/sbin/ethtool -G eth0 rx 1024 tx 1024 >> /var/log/ethtool.log 2>&1
+
+exit 0
+EOF
+
+# 赋予执行权限
+chmod +x /etc/rc.local
+
+# 测试执行
+/etc/rc.local</code></pre>
+<hr>
+<h2><strong>六、OpenWrt LXC 容器配置</strong></h2>
+<h3><strong>6.1 下载 OpenWrt rootfs</strong></h3>
+<pre><code class="language-bash">cd /tmp
+wget https://downloads.immortalwrt.org/releases/24.10.0/targets/armsr/armv8/immortalwrt-24.10.0-armsr-armv8-rootfs.tar.gz</code></pre>
+<h3><strong>6.2 创建容器并解压</strong></h3>
+<pre><code class="language-bash">mkdir -p /var/lib/lxc/openwrt/rootfs
+tar -xzf immortalwrt-*.tar.gz -C /var/lib/lxc/openwrt/rootfs/</code></pre>
+<h3><strong>6.3 容器配置文件</strong></h3>
+<pre><code class="language-bash">cat > /var/lib/lxc/openwrt/config <<'EOF'
+# 容器基本配置
+lxc.include = /usr/share/lxc/config/common.conf
+lxc.arch = arm64
+lxc.uts.name = openwrt
+lxc.tty.max = 2
+lxc.start.auto = 1
+lxc.start.delay = 5
+
+# rootfs路径
+lxc.rootfs.path = dir:/var/lib/lxc/openwrt/rootfs
+
+# WAN口 - 物理直通
+lxc.net.0.type = phys
+lxc.net.0.name = eth0
+lxc.net.0.flags = up
+lxc.net.0.link = wan
+
+# LAN口 - 连接宿主机网桥
+lxc.net.1.type = veth
+lxc.net.1.name = eth1
+lxc.net.1.flags = up
+lxc.net.1.link = br-mgmt
+lxc.net.1.hwaddr = 00:16:3e:01:02:03
+
+# PPP 设备授权（PPPoE必须）
+lxc.cgroup2.devices.allow = c 108:0 rwm
+lxc.mount.entry = /dev/ppp dev/ppp none bind,create=file
+
+# 基础设备挂载
+lxc.mount.auto = proc:mixed sys:ro cgroup:mixed
+EOF</code></pre>
+<h3><strong>6.4 启动并配置 OpenWrt</strong></h3>
+<pre><code class="language-bash"># 启动容器
+lxc-start -n openwrt
+lxc-ls -f  # 确认状态为 RUNNING
+
+# 进入容器
+lxc-attach -n openwrt</code></pre>
+<h3><strong>6.5 OpenWrt 内部网络配置</strong></h3>
+<pre><code class="language-bash"># 编辑 /etc/config/network
+cat > /etc/config/network <<'EOF'
+config interface 'loopback'
+    option device 'lo'
+    option proto 'static'
+    option ipaddr '127.0.0.1'
+    option netmask '255.0.0.0'
+
+config interface 'wan'
+    option device 'eth0'
+    option proto 'pppoe'
+    option username '你的宽带账号'
+    option password '你的宽带密码'
+    option ipv6 '1'
+    option delegate '1'
+    option reqprefix 'auto'
+
+config interface 'lan'
+    option device 'br-lan'
+    option proto 'static'
+    option ipaddr '192.168.2.1'
+    option netmask '255.255.255.0'
+    option ip6assign '60'
+
+config device
+    option name 'br-lan'
+    option type 'bridge'
+    list ports 'eth1'
+
+config interface 'wan6'
+    option proto 'dhcpv6'
+    option device '@wan'
+    option reqaddress 'try'
+    option reqprefix 'auto'
+EOF</code></pre>
+<h3><strong>6.6 OpenWrt DHCP 配置</strong></h3>
+<pre><code class="language-bash"># 编辑 /etc/config/dhcp
+cat > /etc/config/dhcp <<'EOF'
+config dnsmasq
+    option domainneeded '1'
+    option boguspriv '1'
+    option filterwin2k '0'
+    option localise_queries '1'
+    option rebind_protection '1'
+    option rebind_localhost '1'
+    option local '/lan/'
+    option domain 'lan'
+    option expandhosts '1'
+    option authoritative '1'
+    option leasefile '/tmp/dhcp.leases'
+
+config dhcp 'lan'
+    option interface 'lan'
+    option start '100'
+    option limit '150'
+    option leasetime '12h'
+    option ra 'disabled'
+    option dhcpv6 'disabled'
+    option dhcpv4 'server'
+
+config dhcp 'wan'
+    option interface 'wan'
+    option ignore '1'
+
+config host
+    option name 'armbian'
+    list mac '5E:B4:EC:05:2F:29'
+    option ip '192.168.2.150'
+    option leasetime 'infinite'
+EOF
+
+# 重启服务并退出
+/etc/init.d/network restart
+/etc/init.d/dnsmasq restart
+exit</code></pre>
+<hr>
+<h2><strong>七、Docker 环境配置</strong></h2>
+<h3><strong>7.1 安装 Docker</strong></h3>
+<pre><code class="language-bash"># 添加 Docker 官方 GPG 密钥
+curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# 添加 Docker 阿里云源
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://mirrors.aliyun.com/docker-ce/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 安装 Docker
+apt update
+apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# 验证
+docker version
+docker compose version</code></pre>
+<h3><strong>7.2 配置 Docker 镜像加速</strong></h3>
+<pre><code class="language-bash"># 创建 Docker 配置（华为云 + 网易镜像源）
+cat > /etc/docker/daemon.json <<EOF
+{
+  "storage-driver": "overlay2",
+  "data-root": "/var/lib/docker",
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "registry-mirrors": [
+    "https://05f073ad3c0010ea0f4bc00b7105ec20.mirror.swr.myhuaweicloud.com",
+    "https://hub-mirror.c.163.com"
+  ]
+}
+EOF
+
+# 重启 Docker
+systemctl restart docker
+docker info | grep -A 2 "Registry Mirrors"</code></pre>
+<h3><strong>7.3 迁移 Docker 到傲腾（保留数据）</strong></h3>
+<pre><code class="language-bash"># 查看傲腾设备
+lsblk -f | grep nvme0n1
+
+# 创建挂载点并挂载
+mkdir -p /mnt/optane
+mount /dev/nvme0n1 /mnt/optane
+
+# 验证数据（应看到 overlay2, containers 等目录）
+ls -la /mnt/optane/
+
+# 添加到 fstab 实现开机自动挂载
+cp /etc/fstab /etc/fstab.bak
+echo "UUID=$(blkid -s UUID -o value /dev/nvme0n1) /mnt/optane ext4 defaults,noatime 0 2" >> /etc/fstab
+
+# 停止 Docker 并迁移数据
+systemctl stop docker
+[ -d /var/lib/docker.bak ] && rm -rf /var/lib/docker.bak
+mv /var/lib/docker /var/lib/docker.bak
+ln -s /mnt/optane /var/lib/docker
+chown -R root:root /var/lib/docker
+
+# 启动 Docker
+systemctl start docker
+
+# 验证
+docker info | grep "Docker Root Dir"  # 应显示 /var/lib/docker
+docker ps -a  # 应该能看到原来的容器
+df -h /var/lib/docker  # 应显示傲腾的空间</code></pre>
+<hr>
+<h2><strong>八、Web 环境部署 (Docker Compose)</strong></h2>
+<h3><strong>8.1 创建项目目录</strong></h3>
+<pre><code class="language-bash"># 在傲腾上创建网站目录
+mkdir -p /mnt/optane/webstack
+cd /mnt/optane/webstack
+
+# 创建子目录
+mkdir -p mysql/{data,conf} www php/conf.d nginx/conf.d</code></pre>
+<h3><strong>8.2 创建 docker-compose.yml（ARM64 优化版）</strong></h3>
+<pre><code class="language-bash">cat > docker-compose.yml <<'EOF'
+name: webstack
+
+services:
+  mysql:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/biarms/mysql:5.7.30-linux-arm64v8-linuxarm64
+    container_name: web-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: app123456
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+    networks:
+      - webnet
+
+  php:
+    image: php:8.3-fpm-alpine
+    container_name: web-php
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    volumes:
+      - ./www:/var/www/html
+      - ./php/conf.d:/usr/local/etc/php/conf.d
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - webnet
+    command: >
+      sh -c "
+      apk add --no-cache php83-mysqli php83-pdo_mysql php83-gd php83-zip php83-opcache php83-ctype php83-dom php83-iconv php83-xml php83-xmlreader php83-xmlwriter pcre2 libzip &&
+      php-fpm
+      "
+
+  nginx:
+    image: nginx:alpine
+    container_name: web-nginx
+    restart: unless-stopped
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+    volumes:
+      - ./www:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - webnet
+
+  adminer:
+    image: adminer:latest
+    container_name: web-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
+EOF</code></pre>
+<h3><strong>8.3 MySQL 优化配置</strong></h3>
+<pre><code class="language-bash">cat > /mnt/optane/webstack/mysql/conf/my.cnf <<'EOF'
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+user = mysql
+pid-file = /var/run/mysqld/mysqld.pid
+socket = /var/run/mysqld/mysqld.sock
+port = 3306
+basedir = /usr
+datadir = /var/lib/mysql
+tmpdir = /tmp
+
+# InnoDB
+innodb_buffer_pool_size = 512M
+innodb_log_file_size = 48M
+innodb_flush_log_at_trx_commit = 2
+innodb_file_per_table = 1
+innodb_flush_method = O_DIRECT
+
+# Query Cache
+query_cache_type = 1
+query_cache_size = 24M
+query_cache_limit = 1M
+
+# Connections
+max_connections = 50
+max_user_connections = 30
+thread_cache_size = 8
+thread_stack = 192K
+
+# Temp Tables
+tmp_table_size = 64M
+max_heap_table_size = 64M
+table_open_cache = 1600
+
+# MyISAM
+key_buffer_size = 16M
+myisam-recover-options = BACKUP
+
+# Packet
+max_allowed_packet = 16M
+
+# Slow Log
+slow_query_log = 1
+slow_query_log_file = /var/lib/mysql/slow.log
+long_query_time = 2
+log_queries_not_using_indexes = 1
+log_slow_admin_statements = 1
+log_slow_slave_statements = 1
+
+# Error Log
+log_error = /var/lib/mysql/error.log
+log_warnings = 2
+
+# Binary Log
+skip-log-bin
+
+# Timeouts
+wait_timeout = 300
+interactive_timeout = 600
+
+# Performance
+expire_logs_days = 10
+max_binlog_size = 100M
+performance_schema = OFF
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
+
+[mysqldump]
+quick
+quote-names
+max_allowed_packet = 16M
+EOF</code></pre>
+<h3><strong>8.4 Nginx 站点配置</strong></h3>
+<pre><code class="language-bash">cat > /mnt/optane/webstack/nginx/conf.d/default.conf <<'EOF'
+server {
+    listen 80;
+    listen [::]:80;
+    server_name localhost;
+    root /var/www/html;
+    index index.php index.html;
+
+    access_log off;
+    error_log /dev/null crit;
+    client_max_body_size 100M;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location /uploads {
+        alias /var/www/html/uploads;
+        client_max_body_size 100M;
+        autoindex off;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+        fastcgi_param PHP_VALUE "
+            upload_max_filesize = 100M
+            post_max_size = 100M
+            max_execution_time = 300
+            max_input_time = 300
+            memory_limit = 256M
+            log_errors = Off
+            display_errors = On
+        ";
+
+        include fastcgi_params;
+    }
+
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff|woff2|ttf|svg|eot)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+        access_log off;
+    }
+}
+EOF</code></pre>
+<h3><strong>8.5 启动服务</strong></h3>
+<pre><code class="language-bash">cd /mnt/optane/webstack
+docker compose up -d
+docker compose ps</code></pre>
+<hr>
+<h2><strong>九、多站点配置</strong></h2>
+<pre><code class="language-bash"># 创建站点目录
+cd /mnt/optane/webstack
+mkdir -p www/site1 www/site2 www/site3
+
+# 创建测试页面
+echo "<h1>Site 1 - 主站点</h1>" > www/site1/index.html
+echo "<h1>Site 2 - 第二个站点</h1>" > www/site2/index.html
+echo "<h1>Site 3 - 第三个站点</h1>" > www/site3/index.html
+
+# 创建 Nginx 多站点配置
+cat > /mnt/optane/webstack/nginx/conf.d/sites.conf <<'EOF'
+server {
+    listen 80;
+    server_name site1.local;
+    root /var/www/html/site1;
+    index index.html index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+
+server {
+    listen 80;
+    server_name site2.local;
+    root /var/www/html/site2;
+    index index.html index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+
+server {
+    listen 80;
+    server_name site3.local;
+    root /var/www/html/site3;
+    index index.html index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+EOF
+
+# 重启 Nginx
+docker compose restart nginx</code></pre>
+<hr>
+<h2><strong>十、系统检查脚本</strong></h2>
+<pre><code class="language-bash">cat > /root/check-system.sh <<'EOF'
+#!/bin/bash
+echo "══════════════════════════════════════════════"
+echo "【1. 系统负载】"
+uptime
+free -h
+echo ""
+
+echo "【2. 网络状态】"
+ip addr show br-mgmt | grep "inet "
+bridge link show | grep -E "lan|veth"
+ip route show default
+echo ""
+
+echo "【3. 容器状态】"
+lxc-ls -f
+echo ""
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+echo ""
+
+echo "【4. 存储使用】"
+df -h | grep -E "(/dev/mmc|nvme|Filesystem|/mnt/optane)"
+echo ""
+
+echo "【5. CPU 温度】"
+cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null | awk '{print $1/1000 "°C"}' || echo "N/A"
+echo ""
+
+echo "【6. 内核优化参数】"
+sysctl net.core.rmem_max net.core.wmem_max 2>/dev/null || echo "N/A"
+echo "══════════════════════════════════════════════"
+EOF
+
+chmod +x /root/check-system.sh</code></pre>
+<hr>
+<h2><strong>十一、常用命令速查</strong></h2>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>启动 OpenWrt</td>
+<td><code>lxc-start -n openwrt</code></td>
+</tr>
+<tr>
+<td>进入 OpenWrt</td>
+<td><code>lxc-attach -n openwrt</code></td>
+</tr>
+<tr>
+<td>重启网络</td>
+<td><code>systemctl restart networking</code></td>
+</tr>
+<tr>
+<td>应用内核优化</td>
+<td><code>sysctl -p</code></td>
+</tr>
+<tr>
+<td>启动 Web 环境</td>
+<td><code>cd /mnt/optane/webstack && docker compose up -d</code></td>
+</tr>
+<tr>
+<td>查看 Docker 容器</td>
+<td><code>docker ps</code></td>
+</tr>
+<tr>
+<td>重启 Nginx</td>
+<td><code>docker restart web-nginx</code></td>
+</tr>
+<tr>
+<td>重启 MySQL</td>
+<td><code>docker restart web-mysql</code></td>
+</tr>
+<tr>
+<td>查看 MySQL 日志</td>
+<td><code>docker logs web-mysql --tail 50</code></td>
+</tr>
+<tr>
+<td>系统检查</td>
+<td><code>/root/check-system.sh</code></td>
+</tr>
+<tr>
+<td>速度测试</td>
+<td><code>time curl -o /dev/null -s -w "%{time_total}s\n" http://localhost/</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2><strong>十二、最终验证</strong></h2>
+<pre><code class="language-bash"># 1. 运行检查脚本
+/root/check-system.sh
+
+# 2. 测试网络
+ping -c 3 baidu.com
+ping -c 3 8.8.8.8
+
+# 3. 测试 OpenWrt
+lxc-ls -f
+ping -c 3 192.168.2.1
+
+# 4. 测试 Web 服务
+time curl -o /dev/null -s -w "首页速度: %{time_total}s\n" http://localhost/
+time curl -o /dev/null -s -w "PHP速度: %{time_total}s\n" http://localhost/test.php
+curl -I http://localhost:8080 2>/dev/null | head -n 1  # Adminer
+
+# 5. 验证内核优化
+sysctl net.core.rmem_max net.core.wmem_max
+# 应显示 67108864 67108864</code></pre>
+<hr>
+<h2><strong>十三、客户端访问配置</strong></h2>
+<p>如需在电脑上测试多站点，修改 <code>hosts</code> 文件：</p>
+<p><strong>Windows</strong>: <code>C:\Windows\System32\drivers\etc\hosts</code><br>
+<strong>Linux/Mac</strong>: <code>/etc/hosts</code></p>
+<p>添加以下行：</p>
+<pre><code>192.168.2.2 site1.local site2.local site3.local</code></pre>
+<hr>
+<h2><strong>十四、系统资源统计</strong></h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>规格</th>
+<th>已用</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eMMC</td>
+<td>229GB</td>
+<td>~2.1GB</td>
+<td>系统</td>
+</tr>
+<tr>
+<td>傲腾</td>
+<td>14GB</td>
+<td>~3.3GB</td>
+<td>Docker 数据</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>8GB</td>
+<td>充足</td>
+<td>运行服务</td>
+</tr>
+</tbody>
+</table>
+<p><strong>运行中的服务：</strong></p>
+<ul>
+<li>✅ OpenWrt 容器 – 主路由 (PPPoE + DHCP)</li>
+<li>✅ MySQL – 数据库</li>
+<li>✅ PHP-FPM – 动态页面</li>
+<li>✅ Nginx – Web 服务器</li>
+<li>✅ Adminer – 数据库管理</li>
+</ul>
+<hr>
+<h2><strong>十五、故障排查</strong></h2>
+<h3><strong>如果首页慢，但 test.php 快</strong></h3>
+<pre><code class="language-bash"># 检查 WordPress 插件
+ls -la /mnt/optane/webstack/www/wp-content/plugins/ | wc -l
+
+# 查看慢查询
+docker exec web-mysql cat /var/lib/mysql/slow.log | tail -20</code></pre>
+<h3><strong>如果 OpenWrt 慢</strong></h3>
+<pre><code class="language-bash">lxc-attach -n openwrt -- top
+lxc-attach -n openwrt -- logread | tail -20</code></pre>
+<h3><strong>如果网络不通</strong></h3>
+<pre><code class="language-bash"># 检查路由
+ip route show
+
+# 检查网桥
+brctl show</code></pre>
+<hr>
+<h2><strong>十六、结语</strong></h2>
+<p><strong>恭喜！您的 RK3568 已经成为一台功能强大的：</strong></p>
+<p>✅ <strong>主路由器</strong>（OpenWrt + PPPoE + DHCP）<br>
+✅ <strong>Docker 容器平台</strong>（傲腾加速）<br>
+✅ <strong>Web 服务器</strong>（Nginx + PHP + MySQL）<br>
+✅ <strong>多站点支持</strong>（3个虚拟主机）<br>
+✅ <strong>数据库管理</strong>（Adminer）</p>
+<p><strong>核心优化已生效：</strong></p>
+<ul>
+<li><code>net.core.rmem_max = 64MB</code> – 大流量不丢包</li>
+<li><code>net.core.wmem_max = 64MB</code> – 发送数据更顺畅</li>
+<li><code>rc.local</code> 硬件 offload – 网卡硬件加速</li>
+</ul>
+<p><strong>总计占用</strong>: 系统盘仅用 <strong>2.1GB</strong>，傲腾用 <strong>3.3GB</strong>，剩余 <strong>226GB</strong> 可用于 NAS 存储！</p>
+<hr>
+											</div><!-- .entry-content -->
+
+		
+						<div class="entry-utility">
+							This entry was posted in <a href="../category/resourse/" rel="category tag">Resourse</a>. Bookmark the <a href="../rk3568-%e4%b8%bb%e8%b7%af%e7%94%b1-nas-docker-%e5%ae%8c%e6%95%b4%e9%85%8d%e7%bd%ae%e6%96%87%e6%a1%a3-%e6%9c%80%e7%bb%88%e7%89%88/" title="Permalink to RK3568 主路由 + NAS + Docker 完整配置文档 (最终版)" rel="bookmark">permalink</a>.													</div><!-- .entry-utility -->
+					</div><!-- #post-1596 -->
+
+					<div id="nav-below" class="navigation">
+						<div class="nav-previous"><a href="../rk3568-%e8%b7%af%e7%94%b1%e5%99%a8-dd-%e5%91%bd%e4%bb%a4%e5%88%b7%e6%9c%ba%e6%95%99%e7%a8%8b/" rel="prev"><span class="meta-nav">←</span> RK3568 路由器 DD 命令刷机教程</a></div>
+						<div class="nav-next"><a href="../pdf-%e6%96%87%e7%8c%ae%e5%8e%bb%e6%b0%b4%e5%8d%b0/" rel="next">PDF 文献去水印 <span class="meta-nav">→</span></a></div>
+					</div><!-- #nav-below -->
+
+					
+			<div id="comments">
+
+
+
+	<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/rk3568-%e4%b8%bb%e8%b7%af%e7%94%b1-nas-docker-%e5%ae%8c%e6%95%b4%e9%85%8d%e7%bd%ae%e6%96%87%e6%a1%a3-%e6%9c%80%e7%bb%88%e7%89%88/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://yuebinliu.github.io/cfsh-e2e-pages/wp-comments-post.php" method="post" id="commentform" class="comment-form"><p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> <span class="required-field-message">Required fields are marked <span class="required">*</span></span></p><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" autocomplete="name" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="text" value="" size="30" maxlength="100" aria-describedby="email-notes" autocomplete="email" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="text" value="" size="30" maxlength="200" autocomplete="url"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="1596" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p></form>	</div><!-- #respond -->
+	
+</div><!-- #comments -->
+
+	
+			</div><!-- #content -->
+		</div><!-- #container -->
+
+
+		<div id="primary" class="widget-area" role="complementary">
+			<ul class="xoxo">
+
+<li id="categories-3" class="widget-container widget_categories"><h3 class="widget-title">Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-2"><a href="../category/resourse/">Resourse</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="../category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-508"><a href="../category/wordpress/">WordPress 插件</a>
+</li>
+	<li class="cat-item cat-item-510"><a href="../category/guide/">使用指南</a>
+</li>
+	<li class="cat-item cat-item-523"><a href="../category/about/">关于项目</a>
+</li>
+	<li class="cat-item cat-item-503"><a href="../category/start/">快速开始</a>
+</li>
+	<li class="cat-item cat-item-517"><a href="../category/extend/">扩展与集成</a>
+</li>
+	<li class="cat-item cat-item-521"><a href="../category/release/">版本更新</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="../category/life-feeling/">生活</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="../category/hosting/">网络相关</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="../category/%e8%83%a1%e6%80%9d%e4%b9%b1%e6%83%b3/">胡思乱想</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="../category/%e8%b5%84%e6%ba%90/">资源</a>
+</li>
+			</ul>
+
+			</li><li id="archives-2" class="widget-container widget_archive"><h3 class="widget-title">Archives</h3>
+			<ul>
+					<li><a href="../2026/10/">October 2026</a></li>
+	<li><a href="../2026/09/">September 2026</a></li>
+	<li><a href="../2026/04/">April 2026</a></li>
+	<li><a href="../2026/03/">March 2026</a></li>
+	<li><a href="../2026/02/">February 2026</a></li>
+	<li><a href="../2025/09/">September 2025</a></li>
+	<li><a href="../2025/05/">May 2025</a></li>
+	<li><a href="../2025/04/">April 2025</a></li>
+	<li><a href="../2025/03/">March 2025</a></li>
+	<li><a href="../2025/02/">February 2025</a></li>
+	<li><a href="../2024/05/">May 2024</a></li>
+	<li><a href="../2011/02/">February 2011</a></li>
+	<li><a href="../2010/12/">December 2010</a></li>
+	<li><a href="../2010/10/">October 2010</a></li>
+	<li><a href="../2010/07/">July 2010</a></li>
+	<li><a href="../2010/04/">April 2010</a></li>
+	<li><a href="../2010/03/">March 2010</a></li>
+	<li><a href="../2009/06/">June 2009</a></li>
+	<li><a href="../2009/05/">May 2009</a></li>
+	<li><a href="../2009/04/">April 2009</a></li>
+	<li><a href="../2009/03/">March 2009</a></li>
+	<li><a href="../2008/12/">December 2008</a></li>
+	<li><a href="../2008/04/">April 2008</a></li>
+	<li><a href="../2008/02/">February 2008</a></li>
+	<li><a href="../2008/01/">January 2008</a></li>
+	<li><a href="../2006/08/">August 2006</a></li>
+	<li><a href="../2006/05/">May 2006</a></li>
+	<li><a href="../2006/04/">April 2006</a></li>
+	<li><a href="../2006/03/">March 2006</a></li>
+	<li><a href="../2006/02/">February 2006</a></li>
+	<li><a href="../2006/01/">January 2006</a></li>
+	<li><a href="../2005/08/">August 2005</a></li>
+	<li><a href="../2005/05/">May 2005</a></li>
+	<li><a href="../2005/04/">April 2005</a></li>
+	<li><a href="../2005/03/">March 2005</a></li>
+	<li><a href="../1999/11/">November 1999</a></li>
+			</ul>
+
+			</li><li id="tag_cloud-2" class="widget-container widget_tag_cloud"><h3 class="widget-title">Tags</h3><div class="tagcloud"><ul class="wp-tag-cloud" role="list">
+	<li><a href="../tag/child/" class="tag-cloud-link tag-link-135 tag-link-position-1" style="font-size: 8pt;" aria-label="child (1 item)">child</a></li>
+	<li><a href="../tag/cloudflare/" class="tag-cloud-link tag-link-143 tag-link-position-2" style="font-size: 20.833333333333pt;" aria-label="cloudflare (6 items)">cloudflare</a></li>
+	<li><a href="../tag/docker/" class="tag-cloud-link tag-link-193 tag-link-position-3" style="font-size: 20.833333333333pt;" aria-label="docker (6 items)">docker</a></li>
+	<li><a href="../tag/domain/" class="tag-cloud-link tag-link-195 tag-link-position-4" style="font-size: 12.2pt;" aria-label="Domain (2 items)">Domain</a></li>
+	<li><a href="../tag/faq/" class="tag-cloud-link tag-link-524 tag-link-position-5" style="font-size: 8pt;" aria-label="FAQ (1 item)">FAQ</a></li>
+	<li><a href="../tag/markdown/" class="tag-cloud-link tag-link-306 tag-link-position-6" style="font-size: 17.333333333333pt;" aria-label="markdown (4 items)">markdown</a></li>
+	<li><a href="../tag/music/" class="tag-cloud-link tag-link-317 tag-link-position-7" style="font-size: 8pt;" aria-label="music (1 item)">music</a></li>
+	<li><a href="../tag/nginx/" class="tag-cloud-link tag-link-326 tag-link-position-8" style="font-size: 20.833333333333pt;" aria-label="nginx (6 items)">nginx</a></li>
+	<li><a href="../tag/obsidian/" class="tag-cloud-link tag-link-518 tag-link-position-9" style="font-size: 8pt;" aria-label="Obsidian (1 item)">Obsidian</a></li>
+	<li><a href="../tag/proxy/" class="tag-cloud-link tag-link-371 tag-link-position-10" style="font-size: 12.2pt;" aria-label="proxy (2 items)">proxy</a></li>
+	<li><a href="../tag/rest-api/" class="tag-cloud-link tag-link-519 tag-link-position-11" style="font-size: 8pt;" aria-label="REST API (1 item)">REST API</a></li>
+	<li><a href="../tag/ssl/" class="tag-cloud-link tag-link-444 tag-link-position-12" style="font-size: 17.333333333333pt;" aria-label="ssl (4 items)">ssl</a></li>
+	<li><a href="../tag/wordpress/" class="tag-cloud-link tag-link-494 tag-link-position-13" style="font-size: 22pt;" aria-label="wordpress (7 items)">wordpress</a></li>
+	<li><a href="../tag/guide/" class="tag-cloud-link tag-link-512 tag-link-position-14" style="font-size: 15pt;" aria-label="使用指南 (3 items)">使用指南</a></li>
+	<li><a href="../tag/intro/" class="tag-cloud-link tag-link-504 tag-link-position-15" style="font-size: 15pt;" aria-label="入门 (3 items)">入门</a></li>
+	<li><a href="../tag/admin/" class="tag-cloud-link tag-link-511 tag-link-position-16" style="font-size: 8pt;" aria-label="后台 (1 item)">后台</a></li>
+	<li><a href="../tag/practice/" class="tag-cloud-link tag-link-526 tag-link-position-17" style="font-size: 8pt;" aria-label="实践 (1 item)">实践</a></li>
+	<li><a href="../tag/performance/" class="tag-cloud-link tag-link-506 tag-link-position-18" style="font-size: 12.2pt;" aria-label="性能 (2 items)">性能</a></li>
+	<li><a href="../tag/plugin/" class="tag-cloud-link tag-link-509 tag-link-position-19" style="font-size: 15pt;" aria-label="插件 (3 items)">插件</a></li>
+	<li><a href="../tag/architecture/" class="tag-cloud-link tag-link-505 tag-link-position-20" style="font-size: 15pt;" aria-label="架构 (3 items)">架构</a></li>
+	<li><a href="../tag/template/" class="tag-cloud-link tag-link-514 tag-link-position-21" style="font-size: 8pt;" aria-label="模板 (1 item)">模板</a></li>
+	<li><a href="../tag/demo/" class="tag-cloud-link tag-link-525 tag-link-position-22" style="font-size: 8pt;" aria-label="演示站 (1 item)">演示站</a></li>
+	<li><a href="../tag/release/" class="tag-cloud-link tag-link-522 tag-link-position-23" style="font-size: 8pt;" aria-label="版本 (1 item)">版本</a></li>
+	<li><a href="../tag/cache/" class="tag-cloud-link tag-link-516 tag-link-position-24" style="font-size: 8pt;" aria-label="缓存 (1 item)">缓存</a></li>
+	<li><a href="../tag/comments/" class="tag-cloud-link tag-link-515 tag-link-position-25" style="font-size: 8pt;" aria-label="评论 (1 item)">评论</a></li>
+	<li><a href="../tag/roadmap/" class="tag-cloud-link tag-link-527 tag-link-position-26" style="font-size: 8pt;" aria-label="路线图 (1 item)">路线图</a></li>
+	<li><a href="../tag/deploy/" class="tag-cloud-link tag-link-507 tag-link-position-27" style="font-size: 15pt;" aria-label="部署 (3 items)">部署</a></li>
+	<li><a href="../tag/integration/" class="tag-cloud-link tag-link-520 tag-link-position-28" style="font-size: 8pt;" aria-label="集成 (1 item)">集成</a></li>
+	<li><a href="../tag/style/" class="tag-cloud-link tag-link-513 tag-link-position-29" style="font-size: 8pt;" aria-label="风格 (1 item)">风格</a></li>
+</ul>
+</div>
+</li>			</ul>
+		</div><!-- #primary .widget-area -->
+
+	</div><!-- #main -->
+
+	<div id="footer" role="contentinfo">
+		<div id="colophon">
+
+
+
+			<div id="site-info">
+				<a href="../" rel="home">
+					yuebin's blog				</a>
+							</div><!-- #site-info -->
+
+			<div id="site-generator">
+								<a href="https://wordpress.org/" class="imprint" title="Semantic Personal Publishing Platform">
+					Proudly powered by WordPress.				</a>
+			</div><!-- #site-generator -->
+
+		</div><!-- #colophon -->
+	</div><!-- #footer -->
+
+</div><!-- #wrapper -->
+
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/twentyten/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<script type="text/javascript" src="../wp-includes/js/comment-reply.min.js?ver=6.9.1" id="comment-reply-js" async="async" data-wp-strategy="async" fetchpriority="low"></script>
+<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"https://yuebinliu.github.io/cfsh-e2e-pages/wp-includes/js/wp-emoji-release.min.js?ver=6.9.1"}}
+</script>
+<script type="module">
+/* <![CDATA[ */
+/*! This file is auto-generated */
+const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjecturl(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoji),r(t.wpemoji)))});
+//# sourceURL=https://yuebinliu.github.io/cfsh-e2e-pages/wp-includes/js/wp-emoji-loader.min.js
+/* ]]> */
+</script>
+</body>
+</html>
